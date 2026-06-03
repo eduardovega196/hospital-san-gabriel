@@ -598,12 +598,8 @@ DB_PATH = "hospital_insumos.db"
 
 def verificar_bbdd():
     if not os.path.exists(DB_PATH):
-        try:
-            import subprocess
-            subprocess.run(["python", "bbdd.py"], check=True)
-        except Exception as e:
-            st.error(f"No se pudo generar la base de datos: {e}")
-            st.stop()
+        from bbdd import generar_base_de_datos
+        generar_base_de_datos(n_registros=2000, db_path=DB_PATH)
 
 verificar_bbdd()
 
