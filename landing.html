@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedStock</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B3A7A;--navy-mid:#254d9e;--navy-dark:#0a1a40;
+  --lime:#8DC63F;--lime-dark:#6fa32e;
+  --bg:#050d1f;--white:#fff;--muted:#8a9bbf;
+  --border:rgba(141,198,63,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
+
+/* ─── HERO ─── */
+#hero{
+  position:relative;height:100vh;min-height:600px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+#canvas-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-inner{position:relative;z-index:2;text-align:center;padding:0 2rem}
+
+.hero-badge{
+  display:inline-block;
+  border:1px solid var(--lime);
+  color:var(--lime);
+  font-size:0.62rem;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;padding:0.35rem 1rem;border-radius:20px;
+  margin-bottom:2rem;
+  animation:fadeUp 0.8s ease both;
+}
+.hero-title{
+  font-size:clamp(4rem,12vw,9rem);
+  font-weight:900;letter-spacing:-0.02em;line-height:0.9;
+  text-transform:uppercase;
+  background:linear-gradient(135deg,#fff 30%,#8DC63F 60%,#4a9fff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp 0.8s 0.15s ease both;
+}
+.hero-sub{
+  font-size:clamp(0.8rem,2vw,1rem);font-weight:400;
+  color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;
+  margin-top:1.2rem;
+  animation:fadeUp 0.8s 0.3s ease both;
+}
+.hero-tagline{
+  font-size:clamp(0.85rem,2vw,1.05rem);font-weight:300;
+  color:rgba(255,255,255,0.6);margin-top:0.6rem;
+  animation:fadeUp 0.8s 0.45s ease both;
+}
+.hero-statement{
+  font-size:clamp(1.15rem,2.6vw,1.6rem);font-weight:600;
+  color:#fff;letter-spacing:-0.01em;line-height:1.4;
+  max-width:720px;margin:1.8rem auto 0;
+  animation:fadeUp 0.8s 0.55s ease both;
+}
+.hero-statement .accent{
+  background:linear-gradient(135deg,#8DC63F 0%,#4a9fff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:800;
+}
+
+.hero-stats{
+  display:flex;gap:3rem;margin-top:3.5rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp 0.8s 0.6s ease both;
+}
+.hero-stat{text-align:center}
+.hero-stat-n{font-size:2rem;font-weight:800;color:var(--lime);letter-spacing:-0.03em;line-height:1}
+.hero-stat-l{font-size:0.6rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem}
+
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  animation:fadeUp 1s 1s ease both;
+  cursor:pointer;
+}
+.scroll-hint span{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.scroll-arrow{width:1px;height:40px;background:linear-gradient(to bottom,var(--lime),transparent);animation:scrollPulse 2s ease-in-out infinite}
+
+/* ─── DIVIDER LINE ─── */
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--lime),transparent);margin:0}
+
+/* ─── SECTIONS COMUNES ─── */
+.section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+.section-badge{
+  font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:1rem;display:block;
+}
+.section-title{
+  font-size:clamp(1.8rem,5vw,3rem);font-weight:800;
+  text-transform:uppercase;letter-spacing:0.02em;line-height:1.05;
+  margin-bottom:1rem;
+}
+.section-lead{font-size:1rem;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.8;max-width:620px}
+
+/* ─── PROBLEMA / SOLUCIÓN ─── */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem}
+.problem-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:8px;padding:1.5rem;
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;overflow:hidden;
+}
+.problem-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--lime);transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s ease;
+}
+.problem-card:hover::before{transform:scaleX(1)}
+.problem-card:hover{border-color:rgba(141,198,63,0.25);transform:translateY(-3px)}
+.problem-card h3{font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--lime);margin-bottom:0.6rem}
+.problem-card p{font-size:0.85rem;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.7}
+.problem-card .stat-big{font-size:2.5rem;font-weight:800;color:var(--white);line-height:1;margin-bottom:0.3rem;letter-spacing:-0.03em}
+
+/* ─── MÓDULOS ─── */
+.modules-section{padding:6rem 2rem;background:rgba(255,255,255,0.015);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)}
+.modules-inner{max-width:1100px;margin:0 auto}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;margin-top:3.5rem;border:1px solid rgba(255,255,255,0.07);border-radius:8px;overflow:hidden}
+.module-card{
+  background:rgba(255,255,255,0.025);
+  padding:2rem 1.75rem;
+  transition:background 0.3s;
+  cursor:default;
+  position:relative;
+}
+.module-card:hover{background:rgba(141,198,63,0.05)}
+.module-num{font-size:0.6rem;font-weight:700;letter-spacing:0.2em;color:rgba(141,198,63,0.4);margin-bottom:0.8rem}
+.module-icon{font-size:1.6rem;margin-bottom:1rem;line-height:1}
+.module-name{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem}
+.module-desc{font-size:0.8rem;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.7}
+.module-tag{
+  display:inline-block;margin-top:1rem;
+  font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:0.2rem 0.6rem;border-radius:20px;
+  background:rgba(141,198,63,0.1);color:var(--lime);
+  border:1px solid rgba(141,198,63,0.2);
+}
+
+/* ─── FEFO DETAIL ─── */
+.detail-section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+.detail-row{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-top:3rem}
+.detail-row.reverse{direction:rtl}
+.detail-row.reverse > *{direction:ltr}
+.detail-visual{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;padding:1.5rem;
+  font-size:0.8rem;
+}
+.detail-visual .dv-label{font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--lime);margin-bottom:1rem;font-weight:700}
+.lote-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.lote-row:last-child{border:none}
+.lote-name{font-weight:600;font-size:0.82rem}
+.lote-date{font-size:0.75rem;color:var(--muted)}
+.badge-fefo{background:rgba(141,198,63,0.15);color:var(--lime);font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:20px;border:1px solid rgba(141,198,63,0.3)}
+.badge-ok{background:rgba(255,255,255,0.06);color:var(--muted);font-size:0.58rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:20px}
+.detail-text h2{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;text-transform:uppercase;letter-spacing:0.03em;line-height:1.1;margin-bottom:1rem}
+.detail-text p{font-size:0.88rem;font-weight:300;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:0.8rem}
+.detail-text .highlight{color:var(--lime);font-weight:600}
+
+/* ─── IA SECTION ─── */
+.ia-section{padding:6rem 2rem;background:rgba(27,58,122,0.12);border-top:1px solid rgba(27,58,122,0.3)}
+.ia-inner{max-width:1100px;margin:0 auto}
+.ia-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:center;margin-top:3rem}
+.chat-demo{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:1.5rem}
+.chat-msg{margin-bottom:1rem}
+.chat-msg.user .bubble{
+  background:var(--navy);color:rgba(214,224,245,0.9);
+  padding:0.6rem 0.9rem;border-radius:10px 10px 2px 10px;
+  font-size:0.78rem;font-weight:400;line-height:1.6;margin-left:20%;
+}
+.chat-msg.bot .bubble{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-left:2px solid var(--lime);
+  padding:0.6rem 0.9rem;border-radius:10px 10px 10px 2px;
+  font-size:0.78rem;font-weight:300;line-height:1.7;color:rgba(255,255,255,0.7);
+  margin-right:10%;
+}
+.chat-msg.bot .bubble strong{color:var(--lime);font-weight:600}
+
+/* ─── FOOTER MINI ─── */
+.footer-mini{
+  padding:3rem 2rem;text-align:center;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.footer-logo{font-size:1.5rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(90deg,#fff,#8DC63F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.footer-sub{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:0.4rem}
+.footer-line{font-size:0.7rem;color:rgba(255,255,255,0.2);margin-top:1.5rem}
+
+.btn-ingresar {
+  display: inline-block;
+  margin-top: 3rem;
+  padding: 1rem 2.5rem;
+  background: var(--lime);
+  color: var(--navy-dark);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 50px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeUp 0.8s 0.7s ease both;
+}
+.btn-ingresar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(141,198,63,0.4);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollPulse{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:0.3;transform:scaleY(0.5)}}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:700px){
+  .problem-grid{grid-template-columns:1fr}
+  .detail-row,.ia-grid{grid-template-columns:1fr}
+  .detail-row.reverse{direction:ltr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <canvas id="canvas-bg"></canvas>
+  <div class="hero-inner">
+    <span class="hero-badge">Hospital San Gabriel · Sistema de Gestión Preventiva</span>
+    <h1 class="hero-title">MedStock</h1>
+    <p class="hero-sub">Gestión de Insumos Hospitalarios · v2.0</p>
+    <p class="hero-tagline">Control inteligente de stock · Método FEFO · Proyección predictiva · IA</p>
+    <p class="hero-statement">Cada salida, traslado y ajuste queda registrado: <span class="accent">ningún cambio de stock queda sin huella.</span></p>
+    
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-n">2.000+</div>
+        <div class="hero-stat-l">Registros activos</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">7</div>
+        <div class="hero-stat-l">Módulos integrados</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">FEFO</div>
+        <div class="hero-stat-l">Método de rotación</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">IA</div>
+        <div class="hero-stat-l">Asistente clínico</div>
+      </div>
+    </div>
+
+
+  </div>
+  
+  <div class="scroll-hint" onclick="document.getElementById('problema').scrollIntoView({behavior:'smooth'})">
+    <span>Explorar</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ PROBLEMA ═══ -->
+<div id="problema" style="background:rgba(192,57,43,0.04);border-bottom:1px solid rgba(192,57,43,0.12)">
+<div class="section reveal">
+  <span class="section-badge">El problema que resolvemos</span>
+  <h2 class="section-title">El hospital perdía<br><span style="color:#C0392B">$60 millones</span><br>por trimestre</h2>
+  <p class="section-lead">Quiebres de stock recurrentes y pérdidas por vencimiento de insumos coexistían en el mismo sistema. MedStock ataca ambos frentes simultáneamente.</p>
+
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <h3>Quiebres de Stock</h3>
+      <div class="stat-big">31</div>
+      <p>Cirugías suspendidas por insumo crítico no disponible en un trimestre. Cada quiebre implica horas de pabellón perdidas y listas de espera que crecen.</p>
+    </div>
+    <div class="problem-card reveal">
+      <h3>Vencimientos Masivos</h3>
+      <div class="stat-big">$60M</div>
+      <p>Pesos en pérdidas por eliminación de insumos vencidos. Paradójicamente, mientras faltaban insumos críticos, otros caducaban en bodegas sin control.</p>
+    </div>
+    <div class="problem-card reveal">
+      <h3>Sin Trazabilidad</h3>
+      <div class="stat-big">0</div>
+      <p>Sistemas de alerta preventiva existían antes de MedStock. La gestión era reactiva, dependiente de Excel, formularios en papel y comunicación informal.</p>
+    </div>
+    <div class="problem-card reveal">
+      <h3>Sin Rotación FEFO</h3>
+      <div class="stat-big">54</div>
+      <p>Incidentes por cajas quirúrgicas incompletas. Sin un criterio formal de rotación por fecha de vencimiento, los lotes más críticos se ignoraban.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ MÓDULOS ═══ -->
+<div class="modules-section">
+<div class="modules-inner reveal">
+  <span class="section-badge">Plataforma modular</span>
+  <h2 class="section-title">7 módulos.<br>Una sola plataforma.</h2>
+  <p class="section-lead">Cada módulo resuelve una falla concreta del sistema de abastecimiento hospitalario.</p>
+
+  <div class="modules-grid">
+    <div class="module-card">
+      <div class="module-num">01</div>
+      <div class="module-icon">📊</div>
+      <div class="module-name">Dashboard</div>
+      <div class="module-desc">Vista ejecutiva en tiempo real: KPIs de stock, vencimientos, valor del inventario y distribución por unidad clínica. Diseñado para decisiones rápidas.</div>
+      <span class="module-tag">Tiempo real</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">02</div>
+      <div class="module-icon">🚨</div>
+      <div class="module-name">Alertas Críticas</div>
+      <div class="module-desc">Productos vencidos, stock agotado y próximos a expirar. Tres niveles de severidad con visualización inmediata del déficit por unidad.</div>
+      <span class="module-tag">Preventivo</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">03</div>
+      <div class="module-icon">🔄</div>
+      <div class="module-name">Traslado FEFO</div>
+      <div class="module-desc">First Expired, First Out. El sistema sugiere automáticamente el lote con fecha más próxima, eliminando mermas por vencimiento en bodegas.</div>
+      <span class="module-tag">Método FEFO</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">04</div>
+      <div class="module-icon">📦</div>
+      <div class="module-name">Inventario</div>
+      <div class="module-desc">2.000+ registros filtrables por categoría, ubicación, estado de vencimiento y stock. Exportación CSV para integración con sistemas existentes.</div>
+      <span class="module-tag">2.000+ registros</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">05</div>
+      <div class="module-icon">📈</div>
+      <div class="module-name">Proyección Predictiva</div>
+      <div class="module-desc">Regresión lineal sobre historial de consumo semanal. Anticipa quiebres de stock con 7, 14 y 30 días de anticipación por producto y ubicación.</div>
+      <span class="module-tag">Machine Learning</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">06</div>
+      <div class="module-icon">🤖</div>
+      <div class="module-name">Asistente IA</div>
+      <div class="module-desc">Chat en lenguaje natural con contexto del inventario real. Responde preguntas clínicas, identifica urgencias y recomienda acciones concretas.</div>
+      <span class="module-tag">Gemini API</span>
+    </div>
+    <div class="module-card">
+      <div class="module-num">07</div>
+      <div class="module-icon">📋</div>
+      <div class="module-name">Movimientos</div>
+      <div class="module-desc">Historial cronológico completo de traslados, entradas y salidas. Trazabilidad total por usuario, origen, destino y lote para auditorías.</div>
+      <span class="module-tag">Trazabilidad</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FEFO DETAIL ═══ -->
+<div class="detail-section reveal">
+  <span class="section-badge">Módulo clave · Traslado a Pabellón</span>
+  <div class="detail-row">
+    <div class="detail-text">
+      <h2>FEFO:<br>el método que<br>elimina mermas</h2>
+      <p><span class="highlight">First Expired, First Out.</span> Antes de MedStock, los funcionarios elegían lotes al azar al preparar cajas quirúrgicas. Productos con fechas próximas quedaban en bodega mientras se consumían lotes nuevos.</p>
+      <p>El módulo de Traslado analiza todos los lotes disponibles del insumo seleccionado y <span class="highlight">sugiere automáticamente el que vence primero</span>, con alerta de color según urgencia.</p>
+      <p>Cada movimiento queda registrado con usuario, origen, destino, lote y timestamp — creando una cadena de custodia completa.</p>
+    </div>
+    <div class="detail-visual">
+      <div class="dv-label">Sugerencia FEFO · Sutura Monocryl 3-0</div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name">LOT-2024-0892</div>
+          <div class="lote-date">Vence: 15 Jun 2025 · 14 días · Pabellón 1</div>
+        </div>
+        <span class="badge-fefo">↑ Usar primero</span>
+      </div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name">LOT-2024-1103</div>
+          <div class="lote-date">Vence: 03 Sep 2025 · 94 días · Bodega Central</div>
+        </div>
+        <span class="badge-ok">Disponible</span>
+      </div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name">LOT-2025-0041</div>
+          <div class="lote-date">Vence: 20 Ene 2026 · 233 días · Farmacia</div>
+        </div>
+        <span class="badge-ok">Disponible</span>
+      </div>
+      <div style="margin-top:1.2rem;padding:0.8rem;background:rgba(141,198,63,0.07);border-radius:6px;border:1px solid rgba(141,198,63,0.2)">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--lime);margin-bottom:0.3rem">Acción sugerida</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6">Trasladar <strong style="color:white">LOT-2024-0892</strong> desde Pabellón 1 hacia el quirófano antes del 15 de junio para evitar su vencimiento.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PROYECCIÓN ═══ -->
+<div style="background:rgba(27,58,122,0.07);border-top:1px solid rgba(27,58,122,0.2);border-bottom:1px solid rgba(27,58,122,0.2)">
+<div class="detail-section reveal">
+  <span class="section-badge">Módulo clave · Proyección Predictiva</span>
+  <div class="detail-row reverse">
+    <div class="detail-text">
+      <h2>Anticipa quiebres<br>antes de que<br>ocurran</h2>
+      <p>El módulo de Proyección aplica <span class="highlight">regresión lineal</span> sobre el historial de consumo semanal de cada insumo. Con esos datos, estima cuántos días faltan para que el stock llegue a cero.</p>
+      <p>Los resultados se clasifican en <span class="highlight">Urgente (7 días)</span>, <span class="highlight">Crítico (14 días)</span> y <span class="highlight">Alerta (30 días)</span>, permitiendo anticipar órdenes de compra antes del quiebre.</p>
+      <p>Esto transforma la gestión de abastecimiento de reactiva a <span class="highlight">completamente preventiva</span>.</p>
+    </div>
+    <div class="detail-visual">
+      <div class="dv-label">Proyecciones activas · Top urgencias</div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name" style="color:#C0392B">Guante Estéril 7.5</div>
+          <div class="lote-date">Stock: 48 ud · Consumo: 12/sem → Quiebre en <strong style="color:#C0392B">4 días</strong></div>
+        </div>
+        <span style="background:rgba(192,57,43,0.15);color:#e57373;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:20px;border:1px solid rgba(192,57,43,0.3)">Urgente</span>
+      </div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name" style="color:#E67E22">Cloruro de Sodio 0.9%</div>
+          <div class="lote-date">Stock: 120 ud · Consumo: 15/sem → Quiebre en <strong style="color:#E67E22">11 días</strong></div>
+        </div>
+        <span style="background:rgba(230,126,34,0.15);color:#E67E22;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:20px;border:1px solid rgba(230,126,34,0.3)">Crítico</span>
+      </div>
+      <div class="lote-row">
+        <div>
+          <div class="lote-name">Anestésico Lidocaína 2%</div>
+          <div class="lote-date">Stock: 200 ud · Consumo: 18/sem → Quiebre en <strong>22 días</strong></div>
+        </div>
+        <span style="background:rgba(240,192,64,0.15);color:#F0C040;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:20px;border:1px solid rgba(240,192,64,0.3)">Alerta</span>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;gap:0.5rem;font-size:0.7rem;color:var(--muted)">
+        <span>Modelo: Regresión Lineal (sklearn)</span>
+        <span>·</span>
+        <span>Actualización: cada 5 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ ASISTENTE IA ═══ -->
+<div class="ia-section">
+<div class="ia-inner reveal">
+  <span class="section-badge">Módulo clave · Asistente IA</span>
+  <div class="ia-grid">
+    <div>
+      <h2 class="section-title" style="font-size:clamp(1.5rem,4vw,2.5rem)">Consulta el<br>inventario en<br>lenguaje natural</h2>
+      <p class="section-lead" style="font-size:0.88rem">El asistente tiene acceso completo al inventario en tiempo real. Responde preguntas clínicas, identifica urgencias y sugiere acciones concretas basadas en los datos actuales del hospital.</p>
+      <div style="margin-top:2rem;display:flex;flex-direction:column;gap:0.6rem">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem">Consultas ejemplo</div>
+        <div style="font-size:0.78rem;padding:0.5rem 0.8rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:rgba(255,255,255,0.6)">"¿Qué insumos quirúrgicos están agotados?"</div>
+        <div style="font-size:0.78rem;padding:0.5rem 0.8rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:rgba(255,255,255,0.6)">"¿Qué fármacos debo reabastecer esta semana?"</div>
+        <div style="font-size:0.78rem;padding:0.5rem 0.8rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:rgba(255,255,255,0.6)">"¿Cuánto vale el inventario de Pabellón 1?"</div>
+      </div>
+    </div>
+    <div class="chat-demo">
+      <div style="font-size:0.58rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Demo · Asistente de decisión</div>
+      <div class="chat-msg user">
+        <div class="bubble">¿Qué insumos de Traumatología están en estado crítico o agotado?</div>
+      </div>
+      <div class="chat-msg bot">
+        <div class="bubble">En Traumatología hay <strong>4 insumos críticos</strong> que requieren atención inmediata:<br><br>
+        · <strong>Implante Cadera Titanio</strong> — Stock: 0 (AGOTADO)<br>
+        · <strong>Tornillo Cortical 3.5mm</strong> — Stock: 2 / Mínimo: 20<br>
+        · <strong>Kit Artroscopia Rodilla</strong> — Stock: 1 / Mínimo: 8<br>
+        · <strong>Clavo Intramedular</strong> — Stock: 3 / Mínimo: 15<br><br>
+        Recomiendo iniciar orden de reposición urgente para Implante Cadera y Kit Artroscopia antes del próximo turno quirúrgico.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer-mini">
+  <div class="footer-logo">MedStock</div>
+  <div class="footer-sub">Sistema de Gestión de Insumos Hospitalarios · v2.0</div>
+  <div class="footer-line">Universidad de Concepción · Departamento de Ingeniería Industrial · Gestión en Salud 2026-1</div>
+</div>
+
+<script>
+const canvas=document.getElementById('canvas-bg');
+const ctx=canvas.getContext('2d');
+let W,H,pts,frame=0;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  initPts();
+}
+
+function initPts(){
+  pts=[];
+  const cols=Math.ceil(W/80)+1,rows=Math.ceil(H/80)+1;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      pts.push({
+        bx:c*80,by:r*80,
+        ox:(Math.random()-0.5)*20,oy:(Math.random()-0.5)*20,
+        vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
+        pulse:Math.random()*Math.PI*2,
+        bright:Math.random()
+      });
+    }
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  frame++;
+
+  pts.forEach(p=>{
+    p.ox+=p.vx;p.oy+=p.vy;
+    if(Math.abs(p.ox)>25)p.vx*=-1;
+    if(Math.abs(p.oy)>25)p.vy*=-1;
+    p.pulse+=0.015;
+    p.x=p.bx+p.ox;p.y=p.by+p.oy;
+  });
+
+  const cols=Math.ceil(W/80)+1;
+  pts.forEach((p,i)=>{
+    const row=Math.floor(i/cols),col=i%cols;
+    [[col+1,row],[col,row+1],[col+1,row+1]].forEach(([nc,nr])=>{
+      const ni=nr*cols+nc;
+      if(ni>=pts.length)return;
+      const q=pts[ni];
+      const dx=q.x-p.x,dy=q.y-p.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist>160)return;
+      const alpha=0.06*(1-dist/160);
+      ctx.strokeStyle=`rgba(141,198,63,${alpha})`;
+      ctx.lineWidth=0.5;
+      ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+    });
+  });
+
+  pts.forEach(p=>{
+    const pulse=(Math.sin(p.pulse)+1)/2;
+    const r=1+pulse*1.5;
+    const alpha=0.1+pulse*0.25*p.bright;
+    ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(141,198,63,${alpha})`;ctx.fill();
+  });
+
+  const grd=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.6);
+  grd.addColorStop(0,'rgba(27,58,122,0.0)');
+  grd.addColorStop(1,'rgba(5,13,31,0.6)');
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize',resize);
+resize();draw();
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
