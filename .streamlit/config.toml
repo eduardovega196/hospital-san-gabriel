@@ -1,2 +1,7 @@
-https://github.com/eduardovega196/hospital-san-gabriel/tree/main[theme]
+[theme]
 base = "light"
+primaryColor = "#1B3A7A"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7FB"
+textColor = "#1A2640"
+font = "sans serif"
