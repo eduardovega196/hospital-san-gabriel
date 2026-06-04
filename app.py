@@ -17,6 +17,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo # Agrega esta línea
 import sqlite3
 import os
 import requests
@@ -736,7 +737,8 @@ with st.sidebar:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown(
         f'<span style="color:#3D5A73;font-size:0.7rem;">'
-        f'{datetime.now().strftime("%d %b %Y · %H:%M")}</span>',
+        # Actualiza aquí también
+        f'{datetime.now(ZoneInfo("America/Santiago")).strftime("%d %b %Y · %H:%M")}</span>',
         unsafe_allow_html=True
     )
 
@@ -803,7 +805,8 @@ elif pagina == "Dashboard":
     page_header(
         "Resumen general",
         "Dashboard de Control",
-        f"Estado del inventario al {datetime.now().strftime('%d de %B de %Y, %H:%M')}",
+        # Reemplaza datetime.now() por datetime.now(ZoneInfo('America/Santiago'))
+        f"Estado del inventario al {datetime.now(ZoneInfo('America/Santiago')).strftime('%d de %B de %Y, %H:%M')}",
     )
 
     df   = obtener_insumos()
