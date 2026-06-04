@@ -1418,18 +1418,23 @@ elif pagina == "Inventario":
             """, unsafe_allow_html=True)
 
             stock_a_borrar = int(row_d["Stock_Actual"])
+            
+            # El selector de motivo ahora aparece SIEMPRE, sin importar el stock
+            d_motivo = st.selectbox(
+                "Motivo de la eliminación del registro:",
+                ["Limpieza de catálogo", "Vencido y descartado", "Producto dado de baja", "Error de registro", "Otro"],
+                key="d_motivo",
+            )
+            
             if stock_a_borrar > 0:
-                d_motivo = st.selectbox(
-                    "Motivo de la baja (este producto tiene stock que saldrá del sistema)",
-                    ["Vencido y descartado", "Producto dado de baja", "Error de registro", "Otro"],
-                    key="d_motivo",
-                )
                 st.caption(
                     f"⚠️ Al eliminar, {stock_a_borrar} unidades saldrán del inventario. "
                     f"Se registrará una **Baja** en Movimientos con motivo «{d_motivo}»."
                 )
             else:
-                d_motivo = None
+                st.caption(
+                    f"ℹ️ El stock actual es 0. Se eliminará el registro del sistema por motivo: «{d_motivo}»."
+                )
 
             confirmar_d = st.checkbox(
                 "Confirmo que deseo eliminar este registro de forma permanente",
