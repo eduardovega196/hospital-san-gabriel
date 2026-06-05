@@ -1588,7 +1588,29 @@ elif pagina == "Proyección Predictiva":
 
         st.markdown("<br>", unsafe_allow_html=True)
         section_label("Tabla de proyecciones")
-        st.dataframe(df_proy, use_container_width=True, height=400)
+        st.dataframe(
+            df_proy,
+            use_container_width=True,
+            height=400,
+            hide_index=True,
+            column_config={
+                "Días hasta quiebre": st.column_config.ProgressColumn(
+                    "Días hasta quiebre",
+                    help="Días estimados para que el stock llegue a cero",
+                    format="%d días",
+                    min_value=0,
+                    max_value=60,
+                ),
+                "Consumo / semana": st.column_config.NumberColumn(
+                    "Consumo / sem",
+                    format="%.1f ud"
+                ),
+                "Stock actual": st.column_config.NumberColumn(
+                    "Stock actual",
+                    format="%d ud"
+                ),
+            }
+        )
 
         section_label("Stock actual vs días hasta quiebre")
         fig = px.scatter(
