@@ -1260,6 +1260,19 @@ elif pagina == "Inventario":
                 ))
                 conn.commit()
                 conn.close()
+                                # ← AGREGAR ESTO
+                if int(a_stock) > 0:
+                    registrar_movimiento(
+                        id_insumo=next_id,
+                        nombre=a_nombre.strip(),
+                        lote=a_lote.strip(),
+                        tipo="Entrada",
+                        cantidad=int(a_stock),
+                        origen="Abastecimiento",
+                        destino=a_ubicacion,
+                        usuario=usuario,
+                        motivo="Ingreso inicial de insumo al inventario",
+                    )
                 st.cache_data.clear()
                 st.success(f"✅ **{a_nombre}** agregado con ID {next_id}.")
                 st.rerun()
